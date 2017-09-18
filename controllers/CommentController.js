@@ -1,4 +1,4 @@
-const Zone = require('../models/Zone');
+const Comment = require('../models/Comment');
 
 /** Exporting some CRUD operations...
  * Note: Mongoose convention, put error first then payload ex. (err, zones)
