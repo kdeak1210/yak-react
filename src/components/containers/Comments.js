@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Comment from '../presentation/Comment';
 import styles from './styles';
+import axios from 'axios';
 
 class Comments extends Component{
   constructor(){
@@ -19,6 +20,21 @@ class Comments extends Component{
       },
       list: []
     }
+  }
+
+  componentDidMount(){
+    
+    axios.get('/api/comment')
+      .then((response) => {
+        const results = response.data.results;
+
+        this.setState({
+          list: results
+        });
+      })
+      .catch((err) => {
+        console.log('ERROR: ' + err);
+      });
   }
 
   submitComment(){

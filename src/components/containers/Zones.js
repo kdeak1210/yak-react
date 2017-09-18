@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Zone from '../presentation/Zone';
+import axios from 'axios';
 
 class Zones extends Component {
   constructor(){
@@ -11,10 +12,27 @@ class Zones extends Component {
     this.state = {
       zone: {
         name: '',
-        zipCode: ''
+        zipCodes: ''
       },
       list: []
     }
+  }
+
+  componentDidMount(){
+    console.log('mounted');
+
+    axios.get('/api/zone')
+      .then((response) => {
+        const results = response.data.results;
+        console.log(results);
+
+        this.setState({
+          list: results
+        });
+      })
+      .catch((err) => {
+        console.log('ERROR: ' + err)
+      });
   }
 
   updateZone(e){
