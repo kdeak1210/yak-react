@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import Zone from '../presentation/Zone';
-import axios from 'axios';
+import { APIManager } from '../../utils';
 
 class Zones extends Component {
   constructor(){
     super();
 
     this.updateZone = this.updateZone.bind(this);
-    this.submitZone = this.submitZone.bind(this);
+    this.addZone = this.addZone.bind(this);
 
     this.state = {
       zone: {
@@ -19,20 +19,15 @@ class Zones extends Component {
   }
 
   componentDidMount(){
-    console.log('mounted');
-
-    axios.get('/api/zone')
-      .then((response) => {
-        const results = response.data.results;
-        console.log(results);
-
-        this.setState({
-          list: results
-        });
+    APIManager.get('/api/zone', null, (err, response) => {
+      if (err) {
+        alert('ERROR: ' + err.message);
+        return;
+      }
+      this.setState({
+        list: response.results
       })
-      .catch((err) => {
-        console.log('ERROR: ' + err)
-      });
+    });
   }
 
   updateZone(e){
@@ -45,13 +40,25 @@ class Zones extends Component {
     });
   }
 
-  submitZone(){
-    let updatedList = Object.assign([], this.state.list);
-    updatedList.push(this.state.zone);
+  addZone(){
+    // Make a copy, then convert the string into an array and set to 'zipCodes'
+    let updatedZone = Object.assign({}, this.state.zone);
+    updatedZone['zipCodes'] = updatedZone.zipCode.split(',');
 
-    this.setState({
-      list: updatedList
+    APIManager.post('/api/zone', updatedZone, (err, response) => {
+      if (err) {
+        alert('ERROR: ' + err.message);
+        return;
+      }
+      console.log('ZONE CREATED: ' + JSON.stringify(response));
+      
+      let updatedList = Object.assign([], this.state.list);
+      updatedList.push(response.result)
+      this.setState({
+        list: updatedList
+      });
     });
+
   }
   
   render(){
@@ -68,7 +75,7 @@ class Zones extends Component {
 
         <input id="name" onChange={this.updateZone} className="form-control" type="text" placeholder="Zone name" /><br />
         <input id="zipCode" onChange={this.updateZone} className="form-control" type="text" placeholder="Zone name" /><br />
-        <button onClick={this.submitZone} className="btn btn-danger">Submit Zone</button>        
+        <button onClick={this.addZone} className="btn btn-danger">Submit Zone</button>        
       </div>
     );
   }
