@@ -6,8 +6,10 @@ class Zones extends Component {
   constructor(){
     super();
     this.addZone = this.addZone.bind(this);
+    this.selectZone = this.selectZone.bind(this);
 
     this.state = {
+      selected: 0,
       list: []
     }
   }
@@ -41,10 +43,24 @@ class Zones extends Component {
       });
     });
   }
+
+  selectZone(selectedIndex){
+    this.setState({
+      selected: selectedIndex
+    })
+  }
   
   render(){    
     const zoneList = this.state.list.map((zone, i) => {
-      return <li key={i}><Zone currentZone={zone} /></li>
+      let selected = (i == this.state.selected);
+      return( 
+        <li key={i}>
+          <Zone select={this.selectZone} 
+            index={i}
+            isSelected={selected} 
+            currentZone={zone} />
+        </li>
+      )
     });
 
     return(
