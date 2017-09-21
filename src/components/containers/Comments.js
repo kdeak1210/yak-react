@@ -1,21 +1,14 @@
 import React, { Component } from 'react';
-import Comment from '../presentation/Comment';
+import { CreateComment, Comment } from '../presentation';
 import styles from './styles';
 import { APIManager } from '../../utils';
 
 class Comments extends Component{
   constructor(){
     super();
-
     this.submitComment = this.submitComment.bind(this);
-    this.updateUsername = this.updateUsername.bind(this);
-    this.updateBody = this.updateBody.bind(this);
 
     this.state = {
-      comment: {
-        username: '',
-        body: '',
-      },
       list: []
     }
   }
@@ -32,38 +25,20 @@ class Comments extends Component{
     });
   }
 
-  submitComment(){
-    APIManager.post('/api/comment', this.state.comment, (err, response) => {
+  submitComment(comment){
+    // copy the comment passed to the function
+    let updatedComment = Object.assign({}, comment);
+
+    APIManager.post('/api/comment', updatedComment, (err, response) => {
       if (err) {
         alert(err);
         return;
       }
-      console.log(JSON.stringify(response));
       let updatedList = Object.assign([], this.state.list)
       updatedList.push(response.result);
-
       this.setState({
         list: updatedList
       });
-    });
-  }
-
-  updateUsername(e) {
-    // this.state.comment['username'] = event.target.value // WRONG!
-    let updatedComment = Object.assign({}, this.state.comment);
-    updatedComment['username'] = e.target.value;
-
-    this.setState({
-      comment: updatedComment
-    });
-  }
-
-  updateBody(e){   
-    let updatedComment = Object.assign({}, this.state.comment);
-    updatedComment['body'] = e.target.value;
-
-    this.setState({
-      comment: updatedComment
     });
   }
   
@@ -79,10 +54,7 @@ class Comments extends Component{
           <ul style={styles.comment.commentsList}>
             {commentItems}
           </ul>
-
-          <input onChange={this.updateUsername} className="form-control" type="text" placeholder="Author" /><br />
-          <input onChange={this.updateBody} className="form-control" type="text" placeholder="Comment Body" /><br />    
-          <button onClick={this.submitComment} className="btn btn-info">Add Message</button>          
+          <CreateComment onCreate={this.submitComment}/>
         </div> 
       </div>
     );
