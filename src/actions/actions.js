@@ -2,6 +2,13 @@ import constants from '../constants/constants';
 
 export default {
 
+  commentsReceived: (comments) => {
+    return {
+      type: constants.COMMENTS_RECEIVED,
+      comments: comments
+    }
+  },
+
   /** Action triggered when zones come back from API */
   zonesReceived: (zones) => {
     return {

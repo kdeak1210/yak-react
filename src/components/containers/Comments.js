@@ -4,7 +4,6 @@ import styles from './styles';
 import { APIManager } from '../../utils';
 import { connect } from 'react-redux';
 import actions from '../../actions/actions';
-import store from '../../stores/store';
 
 class Comments extends Component{
   constructor(){
@@ -12,7 +11,7 @@ class Comments extends Component{
     this.submitComment = this.submitComment.bind(this);
 
     this.state = {
-      list: []
+      // list: []
     }
   }
 
@@ -22,9 +21,11 @@ class Comments extends Component{
         console.log('ERROR: ' + err.message);
         return;
       }
-      this.setState({
-        list: response.results
-      })
+      this.props.commentsReceived(response.results);
+      
+      // this.setState({
+      //   list: response.results
+      // })
     });
   }
 
@@ -46,7 +47,7 @@ class Comments extends Component{
   }
   
   render(){
-    const commentItems = this.state.list.map((comment, i) => {
+    const commentItems = this.props.comments.map((comment, i) => {
       return <li key={i}><Comment currentComment={comment}/></li>
     });
 
@@ -73,8 +74,15 @@ const stateToProps = (state) => {
     /* Comments container CARES about the index (selectedZone)
      so we should register that value with the comments container*/
     index: state.zone.selectedZone,
-    zones: state.zone.list
+    zones: state.zone.list,
+    comments: state.comment.list
   }
 }
 
-export default connect(stateToProps)(Comments);
+const dispatchToProps = (dispatch) => {
+  return {
+    commentsReceived: (comments) => dispatch(actions.commentsReceived(comments))
+  }
+}
+
+export default connect(stateToProps, dispatchToProps)(Comments);

@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 
 // I HAD AN ERROR FOREVER TRYING TO IMPORT THIS WITH { BRACKETS }
 import zoneReducer from '../reducers/zoneReducer';
+import commentReducer from '../reducers/commentReducer';
 
 var store;
 
@@ -12,7 +13,8 @@ export default {
   // Passed as props to Provider, brings the reducers together
   configureStore: () => {
     const reducers = combineReducers({
-      zone: zoneReducer
+      zone: zoneReducer,
+      comment: commentReducer
     });
 
     store = createStore(
