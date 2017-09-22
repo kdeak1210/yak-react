@@ -16,6 +16,14 @@ export default {
       type: constants.ZONE_CREATED,
       zone: zone
     }
+  },
+
+  /** Action triggered when zone is selected, takes index of clicked zone */
+  selectZone: (index) => {
+    return {
+      type: constants.SELECT_ZONE,
+      selectedZone: index
+    }
   }
 
 }

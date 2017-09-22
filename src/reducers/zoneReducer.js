@@ -3,6 +3,7 @@ import constants from '../constants/constants';
 /** Reducer maintains the data for a specific data type (Zones) */
 
 var initialState = {
+  selectedZone: 0,
   list: []
 }
 
@@ -27,6 +28,10 @@ export default (state = initialState, action) => {
       updatedList.push(action.zone);
       
       updated['list'] = updatedList;
+      return updated;
+
+    case constants.SELECT_ZONE:
+      updated['selectedZone'] = action.selectedZone;
       return updated;
     
     default:

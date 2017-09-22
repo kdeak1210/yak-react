@@ -12,7 +12,7 @@ class Zones extends Component {
     this.selectZone = this.selectZone.bind(this);
 
     this.state = {
-      selected: 0
+      // selected: 0
     }
   }
 
@@ -50,15 +50,16 @@ class Zones extends Component {
     });
   }
 
-  selectZone(selectedIndex){
-    this.setState({
-      selected: selectedIndex
-    })
+  selectZone(index){
+    this.props.selectZone(index)
+    // this.setState({
+    //   selected: index
+    // })
   }
   
   render(){    
     const zoneList = this.props.list.map((zone, i) => {
-      let selected = (i == this.state.selected);
+      let selected = (i == this.props.selected);
       return( 
         <li key={i}>
           <Zone select={this.selectZone} 
@@ -83,8 +84,9 @@ class Zones extends Component {
 /** This tidbit and the export connect the store to the container */
 const stateToProps = (state) => {
   return {
-    // This key is now a prop called list on the component (FROM STORE STATE)
-    list: state.zone.list
+    // Grabbing these keys from the GLOBAL STORE, assigning to Zones props
+    list: state.zone.list,
+    selected: state.zone.selectedZone
   }
 }
 
@@ -94,7 +96,8 @@ const stateToProps = (state) => {
 const dispatchToProps = (dispatch) => {
   return{
     zonesReceived: (zones) => dispatch(actions.zonesReceived(zones)),
-    zoneCreated: (zone) => dispatch(actions.zoneCreated(zone))
+    zoneCreated: (zone) => dispatch(actions.zoneCreated(zone)),
+    selectZone: (index) => dispatch(actions.selectZone(index))
   }
 }
 
