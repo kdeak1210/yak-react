@@ -12,38 +12,81 @@ class Comments extends Component{
 
     this.state = {
       // list: []
+      commentsLoaded: false,
+      index: 0
     }
   }
 
   componentDidMount(){
-    APIManager.get('/api/comment', null, (err, response) => {
-      if (err) {
-        console.log('ERROR: ' + err.message);
-        return;
-      }
-      this.props.commentsReceived(response.results);
-      
-      // this.setState({
-      //   list: response.results
-      // })
-    });
+    // let zone = this.props.zones[this.props.index];
+    // if (zone == null){
+    //   // until the API call comes back, there are NO selected zones
+    //   console.log('NO SELECTED ZONE');
+    //   return;
+    // }    
+
+    // APIManager.get('/api/comment', {zone: zone._id}, (err, response) => {
+    //   if (err) {
+    //     console.log('ERROR: ' + err.message);
+    //     return;
+    //   }
+    //   this.props.commentsReceived(response.results);
+
+    // });
   }
 
   submitComment(comment){
     // copy the comment passed to the function
     let updatedComment = Object.assign({}, comment);
 
+    // Assign currently selected zone's id to comment before sending it up
+    let zone = this.props.zones[this.props.index];
+    updatedComment['zone'] = zone._id
+
+    console.log(updatedComment);
     APIManager.post('/api/comment', updatedComment, (err, response) => {
       if (err) {
         alert(err);
         return;
       }
-      let updatedList = Object.assign([], this.state.list)
-      updatedList.push(response.result);
-      this.setState({
-        list: updatedList
-      });
+
+      console.log(JSON.stringify(response));
+      this.props.commentCreated(response.result);
+      // let updatedList = Object.assign([], this.state.list)
+      // updatedList.push(response.result);
+      // this.setState({
+      //   list: updatedList
+      // });
     });
+  }
+
+  componentWillUpdate(){
+
+  }
+
+  /** Triggers everytime theres a change to the store */
+  componentDidUpdate(){
+    console.log('COMMENTS CONTAINER: componenetDidUpdate');
+    let zone = this.props.zones[this.props.index];
+    if (zone == null){
+      console.log('NO SELECTED ZONE');
+      return;
+    }
+
+    console.log('Selected zone is ready');
+    if (this.props.commentsLoaded == true) 
+      return;
+    
+    APIManager.get('/api/comment', {params: {zone: zone._id}}, (err, response) => {
+      if (err) {
+        console.log('ERROR: ' + err.message);
+        return;
+      }
+
+      let comments = response.results;
+      this.props.commentsReceived(comments);
+    });
+
   }
   
   render(){
@@ -52,8 +95,7 @@ class Comments extends Component{
     });
 
     const selectedZone = this.props.zones[this.props.index];
-    const zoneName = (selectedZone==null) ? '' : selectedZone.name
-    
+    const zoneName = (selectedZone==null) ? '' : selectedZone.name  
 
     return(
       <div>
@@ -75,13 +117,15 @@ const stateToProps = (state) => {
      so we should register that value with the comments container*/
     index: state.zone.selectedZone,
     zones: state.zone.list,
-    comments: state.comment.list
+    comments: state.comment.list,
+    commentsLoaded: state.comment.commentsLoaded
   }
 }
 
 const dispatchToProps = (dispatch) => {
   return {
-    commentsReceived: (comments) => dispatch(actions.commentsReceived(comments))
+    commentsReceived: (comments) => dispatch(actions.commentsReceived(comments)),
+    commentCreated: (comment) => dispatch(actions.commentCreated(comment))
   }
 }
 

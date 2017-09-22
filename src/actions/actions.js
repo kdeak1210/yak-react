@@ -9,6 +9,13 @@ export default {
     }
   },
 
+  commentCreated: (comment) => {
+    return {
+      type: constants.COMMENT_CREATED,
+      comment: comment
+    }
+  },
+
   /** Action triggered when zones come back from API */
   zonesReceived: (zones) => {
     return {
