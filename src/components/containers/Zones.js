@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { Zone, CreateZone } from '../presentation/';
 import { APIManager } from '../../utils';
+import { connect } from 'react-redux';
+import actions from '../../actions/actions';
+import store from '../../stores/store';
 
 class Zones extends Component {
   constructor(){
@@ -9,8 +12,7 @@ class Zones extends Component {
     this.selectZone = this.selectZone.bind(this);
 
     this.state = {
-      selected: 0,
-      list: []
+      selected: 0
     }
   }
 
@@ -20,9 +22,12 @@ class Zones extends Component {
         alert('ERROR: ' + err.message);
         return;
       }
-      this.setState({
-        list: response.results
-      })
+      // Dispatch an ACTION!
+      const zones = response.results;
+      //store.currentStore().dispatch(actions.zonesReceived(zones));
+      
+      // instead, dispatch the action like this but implement it outside class
+      this.props.zonesReceived(zones);      
     });
   }
 
@@ -34,13 +39,14 @@ class Zones extends Component {
       if (err) {
         alert('ERROR: ' + err.message);
         return;
-      }
+      }      
       
-      let updatedList = Object.assign([], this.state.list);
-      updatedList.push(response.result)
-      this.setState({
-        list: updatedList
-      });
+      this.props.zoneCreated(response.result);
+      // let updatedList = Object.assign([], this.state.list);
+      // updatedList.push(response.result)
+      // this.setState({
+      //   list: updatedList
+      // });
     });
   }
 
@@ -51,7 +57,7 @@ class Zones extends Component {
   }
   
   render(){    
-    const zoneList = this.state.list.map((zone, i) => {
+    const zoneList = this.props.list.map((zone, i) => {
       let selected = (i == this.state.selected);
       return( 
         <li key={i}>
@@ -74,4 +80,22 @@ class Zones extends Component {
   }
 }
 
-export default Zones;
+/** This tidbit and the export connect the store to the container */
+const stateToProps = (state) => {
+  return {
+    // This key is now a prop called list on the component (FROM STORE STATE)
+    list: state.zone.list
+  }
+}
+
+/** Do this here bc its poor form to reference store within the component,
+ * because then the component wouldn't be fully self-contained
+ */
+const dispatchToProps = (dispatch) => {
+  return{
+    zonesReceived: (zones) => dispatch(actions.zonesReceived(zones)),
+    zoneCreated: (zone) => dispatch(actions.zoneCreated(zone))
+  }
+}
+
+export default connect(stateToProps, dispatchToProps)(Zones)

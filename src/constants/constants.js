@@ -1,0 +1,6 @@
+export default {
+  
+  ZONES_RECEIVED: 'ZONES_RECEIVED',
+  ZONE_CREATED: 'ZONE_CREATED',
+
+}
