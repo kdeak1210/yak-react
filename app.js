@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 
 // Bring in our routes (index and API)
 const api = require('./routes/api');
+const account = require('./routes/account');
 
 // Initialize the express app
 const app = express();
@@ -41,7 +42,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/', (req, res) => {
   res.render('layouts/main');
 });
+
 app.use('/api', api);
+app.use('/account', account);
 
 const port = process.env.PORT | 3000;
 
