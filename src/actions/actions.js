@@ -2,10 +2,12 @@ import constants from '../constants/constants';
 
 export default {
 
-  commentsReceived: (comments) => {
+  // Action triggered when comments received for a certain ZONE
+  commentsReceived: (comments, zone) => {
     return {
       type: constants.COMMENTS_RECEIVED,
-      comments: comments
+      comments: comments,
+      zone: zone
     }
   },
 

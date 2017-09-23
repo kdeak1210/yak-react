@@ -73,36 +73,52 @@ class Comments extends Component{
       return;
     }
 
-    console.log('Selected zone is ready');
-    if (this.props.commentsLoaded == true) 
-      return;
+    // console.log('Selected zone is ready');
+    // if (this.props.commentsLoaded == true) 
+    //   return;
     
-    APIManager.get('/api/comment', {params: {zone: zone._id}}, (err, response) => {
+    let commentsArray = this.props.commentsMap[zone._id];
+    if (commentsArray != null) {
+      // comments for zone already loaded, no need for API call
+      return;
+    }
+
+    APIManager.get('/api/comment', {zone: zone._id}, (err, response) => {
       if (err) {
         console.log('ERROR: ' + err.message);
         return;
       }
 
       let comments = response.results;
-      this.props.commentsReceived(comments);
+      this.props.commentsReceived(comments, zone);
     });
 
   }
   
   render(){
-    const commentItems = this.props.comments.map((comment, i) => {
-      return <li key={i}><Comment currentComment={comment}/></li>
-    });
-
     const selectedZone = this.props.zones[this.props.index];
-    const zoneName = (selectedZone==null) ? '' : selectedZone.name  
+    
+    let zoneName, commentList = null;
 
-    return(
+    if (selectedZone != null) {
+      zoneName = selectedZone.name;
+
+      let zoneComments = this.props.commentsMap[selectedZone._id];    
+      if (zoneComments != null) {
+        commentList = zoneComments.map((comment, i) => {
+          return (
+            <li key={i}><Comment currentComment={comment} /></li>
+          );
+        });
+      }
+    }
+
+    return (
       <div>
         <h2>{zoneName}</h2>
         <div style={styles.comment.commentsBox}>
           <ul style={styles.comment.commentsList}>
-            {commentItems}
+            { commentList }
           </ul>
           <CreateComment onCreate={this.submitComment}/>
         </div> 
@@ -117,14 +133,15 @@ const stateToProps = (state) => {
      so we should register that value with the comments container*/
     index: state.zone.selectedZone,
     zones: state.zone.list,
-    comments: state.comment.list,
-    commentsLoaded: state.comment.commentsLoaded
+    // comments: state.comment.list,
+    commentsMap: state.comment.map,
+    commentsLoaded: state.comment.commentsLoaded,
   }
 }
 
 const dispatchToProps = (dispatch) => {
   return {
-    commentsReceived: (comments) => dispatch(actions.commentsReceived(comments)),
+    commentsReceived: (comments, zone) => dispatch(actions.commentsReceived(comments, zone)),
     commentCreated: (comment) => dispatch(actions.commentCreated(comment))
   }
 }

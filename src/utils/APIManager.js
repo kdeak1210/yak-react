@@ -4,7 +4,7 @@ import axios from 'axios';
 export default {
 
   get: (url, params, callback) => {
-    axios.get(url, params)
+    axios.get(url, {params: params})
       .then((response) => {
       
         const confirmation = response.data.confirmation;
