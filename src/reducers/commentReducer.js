@@ -8,7 +8,8 @@ var initialState = {
 
 export default (state = initialState, action) => {
 
-  let updated = Object.assign({}, state);      
+  let updated = Object.assign({}, state);
+  let updatedMap = Object.assign({}, updated.map);  
 
   switch (action.type) {
     
@@ -17,8 +18,6 @@ export default (state = initialState, action) => {
       // console.log('comments received from zone: ', JSON.stringify(action.zone))      
       
       // updated['list'] = action.comments;
-
-      let updatedMap = Object.assign({}, updated.map);
       
       let zoneComments = (updatedMap[action.zone._id]) ? 
           Object.assign([], updatedMap[action.zone._id]) : [];
@@ -47,9 +46,18 @@ export default (state = initialState, action) => {
 
     case constants.COMMENT_CREATED:
       console.log('COMMENT CREATED: ' + JSON.stringify(action.comment))
-      // let updatedList = Object.assign([], updated.list);
-      // updatedList.push(action.comment);
-      // updated['list'] = updatedList;
+    
+      let commentList = updatedMap[action.comment.zone];
+      if (commentList == null) {
+        commentList = []
+      } else {
+        commentList = Object.assign([], commentList);
+      }
+      
+      commentList.push(action.comment);
+
+      updatedMap[action.comment.zone] = commentList;
+      updated['map'] = updatedMap;
 
       return updated;
 

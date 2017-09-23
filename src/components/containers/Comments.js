@@ -51,7 +51,8 @@ class Comments extends Component{
       }
 
       console.log(JSON.stringify(response));
-      this.props.commentCreated(response.result);
+      const comment = response.result;
+      this.props.commentCreated(comment);
       // let updatedList = Object.assign([], this.state.list)
       // updatedList.push(response.result);
       // this.setState({
