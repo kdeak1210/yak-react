@@ -6,8 +6,7 @@ const controllers = require('../controllers');
 
 router.get('/:resource', (req, res, next) => {
   
-  const resource = req.params.resource;
-  
+  const resource = req.params.resource;  
   const controller = controllers[resource];
 
   // The requested resource does not exist
@@ -38,7 +37,6 @@ router.get('/:resource/:id', (req, res, next) => {
 
   const resource = req.params.resource;
   const id = req.params.id;
-
   const controller = controllers[resource];
   
   // The requested resource does not exist
@@ -54,7 +52,7 @@ router.get('/:resource/:id', (req, res, next) => {
     if (err){
       res.json({
         confirmation: 'fail',
-        message: `Zone id '${id}' not found`
+        message: `${resource} id '${id}' not found`
       });
       return;
     }
@@ -68,7 +66,6 @@ router.get('/:resource/:id', (req, res, next) => {
 router.post('/:resource', (req, res, next) => {
 
   const resource = req.params.resource;
-
   const controller = controllers[resource];
   
   // The requested resource does not exist

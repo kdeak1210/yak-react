@@ -49,7 +49,7 @@ class Comments extends Component{
         alert(err);
         return;
       }
-
+    
       console.log(JSON.stringify(response));
       const comment = response.result;
       this.props.commentCreated(comment);
