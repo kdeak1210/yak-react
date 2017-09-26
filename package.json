@@ -25,7 +25,6 @@
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
     "serve-favicon": "^2.4.4",
-    "superagent": "^3.6.0",
     "webpack": "^3.6.0"
   },
   "devDependencies": {

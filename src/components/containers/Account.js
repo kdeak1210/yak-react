@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { APIManager } from '../../utils';
+import { connect } from 'react-redux';
+import actions from '../../actions/actions';
 
 class Account extends Component{
   constructor(){
@@ -14,6 +16,20 @@ class Account extends Component{
         password: ''
       }
     }
+  }
+
+  // Right when page shows up, make API call to check for currentuser
+  componentDidMount(){
+    APIManager.get('/account/currentuser', null, (err, response) => {
+      if (err){
+        // Not logged in, ignore error
+        // alert(err.message);
+        return;
+      }
+
+      console.log(JSON.stringify(response));
+      this.props.currentUserReceived(response.user);
+    });
   }
 
   updateProfile(e){
@@ -41,6 +57,8 @@ class Account extends Component{
         return;
       }
       console.log(JSON.stringify(response));
+      
+      this.props.currentUserReceived(response.user);
     });
   }
 
@@ -67,20 +85,44 @@ class Account extends Component{
   }
   
   render(){
+    let content = null;
+    if (this.props.user == null) {
+      content = (
+        <div>
+          <h2>Login</h2>
+          <input onChange={this.updateProfile} id="username" type="text" placeholder="username" /><br />
+          <input onChange={this.updateProfile} id="password" type="password" placeholder="password" /><br />
+          <button onClick={this.login}>Log In</button> 
+          <br />      
+          <h2>Sign Up</h2>
+          <input onChange={this.updateProfile} id="username" type="text" placeholder="username" /><br />
+          <input onChange={this.updateProfile} id="password" type="password" placeholder="password" /><br />
+          <button onClick={this.signup}>Join</button>      
+        </div>
+      )
+    } else {
+      content = <h2>Welcome {this.props.user.username}!</h2> 
+    }
+
     return(
       <div>
-        <h2>Login</h2>
-        <input onChange={this.updateProfile} id="username" type="text" placeholder="username" /><br />
-        <input onChange={this.updateProfile} id="password" type="password" placeholder="password" /><br />
-        <button onClick={this.login}>Log In</button> 
-        <br />      
-        <h2>Sign Up</h2>
-        <input onChange={this.updateProfile} id="username" type="text" placeholder="username" /><br />
-        <input onChange={this.updateProfile} id="password" type="password" placeholder="password" /><br />
-      <button onClick={this.signup}>Join</button>      
-    </div>
+        { content }        
+      </div>
     );
   }
 }
 
-export default Account;
+// returns a JSON object
+const stateToProps = (state) => {
+  return {
+    user: state.account.user
+  }
+}
+
+const dispatchToProps = (dispatch) => {
+  return {
+    currentUserReceived: (user) => dispatch(actions.currentUserReceived(user)),
+  }
+}
+
+export default connect(stateToProps, dispatchToProps) (Account);

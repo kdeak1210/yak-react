@@ -1,20 +1,18 @@
 /** This file is essentially boilerplate - semantics are obvious */
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-
-// I HAD AN ERROR FOREVER TRYING TO IMPORT THIS WITH { BRACKETS }
-import zoneReducer from '../reducers/zoneReducer';
-import commentReducer from '../reducers/commentReducer';
+import { accountReducer, commentReducer, zoneReducer } from '../reducers';
 
 var store;
 
 export default {
 
-  // Passed as props to Provider, brings the reducers together
+  // Passed as props to Provider, combines reducers and applies middleware
   configureStore: () => {
     const reducers = combineReducers({
+      account: accountReducer,
+      comment: commentReducer,     
       zone: zoneReducer,
-      comment: commentReducer
     });
 
     store = createStore(

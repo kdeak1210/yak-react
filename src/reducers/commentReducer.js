@@ -36,7 +36,7 @@ export default (state = initialState, action) => {
       updatedMap[action.zone._id] = zoneComments;
       updated['map'] = updatedMap;
 
-      console.log('COMMENTS RECEIVED: ' , updated);
+      // console.log('COMMENTS RECEIVED: ' , updated);
 
       return updated;
 

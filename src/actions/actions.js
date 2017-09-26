@@ -40,6 +40,14 @@ export default {
       type: constants.SELECT_ZONE,
       selectedZone: index
     }
+  },
+
+  /** Action triggered when the current user is loaded into Store */
+  currentUserReceived: (user) => {
+    return {
+      type: constants.CURRENT_USER_RECEIVED,
+      user: user
+    }
   }
 
 }

@@ -66,7 +66,7 @@ router.post('/:action', (req, res, next) => {
       // The username exists and password matched, send back entire profile
       res.json({
         confirmation: 'success',
-        profile: profile
+        user: profile
       });
     });
   }
@@ -85,7 +85,7 @@ router.get('/:action', (req, res, next) => {
     });
   }
   
-  if(action == 'currentuser'){
+  if (action == 'currentuser'){
 
     // This is a new user, never signed up or logged in
     if (req.session == null){

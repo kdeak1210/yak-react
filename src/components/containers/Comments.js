@@ -61,13 +61,9 @@ class Comments extends Component{
     });
   }
 
-  componentWillUpdate(){
-
-  }
-
   /** Triggers everytime theres a change to the store */
   componentDidUpdate(){
-    console.log('COMMENTS CONTAINER: componenetDidUpdate');
+    // console.log('COMMENTS CONTAINER: componenetDidUpdate');
     let zone = this.props.zones[this.props.index];
     if (zone == null){
       console.log('NO SELECTED ZONE');
