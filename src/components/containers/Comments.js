@@ -36,12 +36,19 @@ class Comments extends Component{
   }
 
   submitComment(comment){
+    if (this.props.user == null){
+      // Leave the comment form there and instead encourage the user to sign in
+      alert('Please Sign up or Login to Comment');
+      return;
+    }
+
     // copy the comment passed to the function
     let updatedComment = Object.assign({}, comment);
 
     // Assign currently selected zone's id to comment before sending it up
     let zone = this.props.zones[this.props.index];
     updatedComment['zone'] = zone._id
+    updatedComment['username'] = this.props.user.username;
 
     console.log(updatedComment);
     APIManager.post('/api/comment', updatedComment, (err, response) => {
@@ -53,11 +60,6 @@ class Comments extends Component{
       console.log(JSON.stringify(response));
       const comment = response.result;
       this.props.commentCreated(comment);
-      // let updatedList = Object.assign([], this.state.list)
-      // updatedList.push(response.result);
-      // this.setState({
-      //   list: updatedList
-      // });
     });
   }
 
@@ -133,6 +135,9 @@ const stateToProps = (state) => {
     // comments: state.comment.list,
     commentsMap: state.comment.map,
     commentsLoaded: state.comment.commentsLoaded,
+
+    // Connect the current user to Comments props...
+    user: state.account.user
   }
 }
 

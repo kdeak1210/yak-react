@@ -8,7 +8,6 @@ class CreateComment extends Component{
 
     this.state = {
       comment: {
-        username: '',
         body: ''
       }
     }
@@ -30,11 +29,6 @@ class CreateComment extends Component{
     return(
       <div>
         <h3>Create Comment</h3>
-        <input onChange={this.updateComment} 
-          id="username"
-          className="form-control" 
-          type="text" 
-          placeholder="Author" /><br />
         <input onChange={this.updateComment} 
           id="body"
           className="form-control" 

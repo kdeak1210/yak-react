@@ -9,6 +9,7 @@ class Account extends Component{
     this.updateProfile = this.updateProfile.bind(this);
     this.signup = this.signup.bind(this);
     this.login = this.login.bind(this);
+    this.logout = this.logout.bind(this);
 
     this.state = {
       profile: {
@@ -80,8 +81,23 @@ class Account extends Component{
         return;
       }
       console.log(JSON.stringify(response));
+      this.props.currentUserReceived(response.user);
     });
+  }
 
+  logout(e){
+    e.preventDefault();
+    console.log('logout');
+
+    APIManager.get('/account/logout', null, (err, response) => {
+      if (err){
+        (err.message);
+        return;
+      }
+      console.log(JSON.stringify(response));
+      // Send a null user through the action to set the use rin store to null
+      this.props.currentUserReceived(null);
+    })
   }
   
   render(){
@@ -101,7 +117,12 @@ class Account extends Component{
         </div>
       )
     } else {
-      content = <h2>Welcome {this.props.user.username}!</h2> 
+      content = (
+        <div>
+          <h2>Welcome {this.props.user.username}!</h2>
+          <button onClick={this.logout}>Logout</button>
+        </div>
+      ) 
     }
 
     return(
