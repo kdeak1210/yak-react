@@ -5,6 +5,7 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const sessions = require('client-sessions');
 
 // Bring in our routes (index and API)
 const api = require('./routes/api');
@@ -34,6 +35,14 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+app.use(sessions({
+  // Every request will have an object called session, stored as cookie
+  cookieName: 'session',
+  secret: 'jkdfgjkd',
+  duration: 24*60*60*1000, // 1 day (valid length of session: microsecond)
+  activeDuration: 30*60*1000
+}));
 
 // Serve pages in public directory
 app.use(express.static(path.join(__dirname, 'public')));

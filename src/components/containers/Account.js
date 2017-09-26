@@ -56,7 +56,7 @@ class Account extends Component{
     }
 
     // APIManager.post
-    APIManager.post('/api/profile', this.state.profile, (err, response) => {
+    APIManager.post('/account/register', this.state.profile, (err, response) => {
       if (err){
         alert(err.message);
         return;
