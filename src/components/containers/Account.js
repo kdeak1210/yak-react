@@ -14,7 +14,9 @@ class Account extends Component{
     this.state = {
       profile: {
         username: '',
-        password: ''
+        password: '',
+        city: '',
+        gender: ''
       }
     }
   }
@@ -113,6 +115,8 @@ class Account extends Component{
           <h2>Sign Up</h2>
           <input onChange={this.updateProfile} id="username" type="text" placeholder="username" /><br />
           <input onChange={this.updateProfile} id="password" type="password" placeholder="password" /><br />
+          <input onChange={this.updateProfile} id="city" type="text" placeholder="city" /><br />
+          <input onChange={this.updateProfile} id="gender" type="text" placeholder="gender" /><br />          
           <button onClick={this.signup}>Join</button>      
         </div>
       )

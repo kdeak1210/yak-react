@@ -48,6 +48,14 @@ export default {
       type: constants.CURRENT_USER_RECEIVED,
       user: user
     }
+  },
+
+  /** Action triggered when a user's profile information is loaded */
+  profileReceived: (profile) => {
+    return {
+      type: constants.PROFILE_RECEIVED,
+      profile: profile
+    }
   }
 
 }

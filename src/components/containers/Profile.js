@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { APIManager } from '../../utils';
+import { connect } from 'react-redux';
+import actions from '../../actions/actions';
 
 class Profile extends Component{
   constructor(){
     super()
     this.state = {
-      profile: null
+      // profile: null
     }
   }
 
@@ -25,15 +27,26 @@ class Profile extends Component{
       }
 
       const profile = response.results[0];
-      this.setState({
-        profile: profile
-      });
+      this.props.profileReceived(profile);
+
     });
   }
 
   render(){
-    const header = (this.state.profile == null) ? null :
-      <h3>{this.state.profile._id}</h3>
+    console.log(this.props);
+    const profile = this.props.profiles[0];
+    let header = null;
+    if (profile != null){
+      header = (
+        <div>
+          <h3>{profile.username}</h3>
+          <p>
+            city: {profile.city} <br/>
+            gender: {profile.gender} <br/>
+          </p>
+        </div> 
+      );
+    }
     
     return(
       <div>
@@ -43,4 +56,16 @@ class Profile extends Component{
   }
 }
 
-export default Profile;
+const stateToProps = (state) => {
+  return {
+    profiles: state.profile.list
+  }
+}
+
+const dispatchToProps = (dispatch) => {
+  return {
+    profileReceived: (profile) => dispatch(actions.profileReceived(profile))
+  }
+}
+
+export default connect(stateToProps, dispatchToProps)(Profile);
