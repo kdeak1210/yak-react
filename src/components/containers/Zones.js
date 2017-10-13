@@ -17,18 +17,8 @@ class Zones extends Component {
   }
 
   componentDidMount(){
-    APIManager.get('/api/zone', null, (err, response) => {
-      if (err) {
-        alert('ERROR: ' + err.message);
-        return;
-      }
-      // Dispatch an ACTION!
-      const zones = response.results;
-      //store.currentStore().dispatch(actions.zonesReceived(zones));
-      
-      // instead, dispatch the action like this but implement it outside class
-      this.props.zonesReceived(zones);      
-    });
+    console.log('componentDidMount');
+    this.props.fetchZones(null);
   }
 
   addZone(zone){
@@ -70,12 +60,23 @@ class Zones extends Component {
       )
     });
 
+    let content = null;
+    if (this.props.appStatus == 'loading'){
+      content = 'LOADING...'
+    } else {
+      content = (
+        <div>
+          <ol>
+            {zoneList}
+          </ol>
+          <CreateZone onCreate={this.addZone}/>
+        </div>
+      )
+    }
+
     return(
       <div>
-        <ol>
-          {zoneList}                                          
-        </ol>
-          <CreateZone onCreate={this.addZone}/>        
+        {content}        
       </div>
     );
   }
@@ -85,6 +86,7 @@ class Zones extends Component {
 const stateToProps = (state) => {
   return {
     // Grabbing these keys from the GLOBAL STORE, assigning to Zones props
+    appStatus: state.zone.appStatus,
     list: state.zone.list,
     selected: state.zone.selectedZone
   }
@@ -95,6 +97,7 @@ const stateToProps = (state) => {
  */
 const dispatchToProps = (dispatch) => {
   return{
+    fetchZones: (params) => dispatch(actions.fetchZones(params)),
     zonesReceived: (zones) => dispatch(actions.zonesReceived(zones)),
     zoneCreated: (zone) => dispatch(actions.zoneCreated(zone)),
     selectZone: (index) => dispatch(actions.selectZone(index))

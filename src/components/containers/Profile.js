@@ -13,29 +13,38 @@ class Profile extends Component{
 
   componentDidMount(){
     console.log('componentDidMount: ' + this.props.username);
+    const profile = this.props.profiles[this.props.username];
 
-    APIManager.get('/api/profile', {username: this.props.username}, (err, response) => {
-      if (err){
-        alert(err);
-        return;
-      }
+    if (profile != null) {  // profile already loaded, dont do API call
+      return;
+    }
+    // Call the action created for fetch profile to do API call
+    this.props.fetchProfile({username: this.props.username});
 
-      //console.log(response.results[0]);
-      if (response.results.length == 0){
-        alert('Profile Not Found');
-        return;
-      }
+    // First time nav to the page, so make the API call
+    // APIManager.get('/api/profile', {username: this.props.username}, (err, response) => {
+    //   if (err){
+    //     alert(err);
+    //     return;
+    //   }
+    //   console.log("API CALL", response.results[0]);
+    //   if (response.results.length == 0){
+    //     alert('Profile Not Found');
+    //     return;
+    //   }
+    //   const profile = response.results[0];
+    //   this.props.profileReceived(profile);
+    // });
+  }
 
-      const profile = response.results[0];
-      this.props.profileReceived(profile);
-
-    });
+  componentDidUpdate(){
+  
   }
 
   render(){
-    console.log(this.props);
-    const profile = this.props.profiles[0];
-    let header = null;
+    const profile = this.props.profiles[this.props.username];
+    
+    let header = null;  
     if (profile != null){
       header = (
         <div>
@@ -48,9 +57,10 @@ class Profile extends Component{
       );
     }
     
+    const content = (this.props.appStatus == 'loading') ? 'Loading...' : header
     return(
       <div>
-        {header}
+        {content}
       </div>
     )
   }
@@ -58,13 +68,15 @@ class Profile extends Component{
 
 const stateToProps = (state) => {
   return {
-    profiles: state.profile.list
+    profiles: state.profile.map,
+    appStatus: state.profile.appStatus
   }
 }
 
 const dispatchToProps = (dispatch) => {
   return {
-    profileReceived: (profile) => dispatch(actions.profileReceived(profile))
+    fetchProfile: (params) => dispatch(actions.fetchProfile(params)),
+    // profileReceived: (profile) => dispatch(actions.profileReceived(profile))
   }
 }
 

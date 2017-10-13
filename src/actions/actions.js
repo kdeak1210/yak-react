@@ -1,4 +1,5 @@
 import constants from '../constants/constants';
+import { APIManager } from '../utils';
 
 export default {
 
@@ -26,6 +27,31 @@ export default {
     }
   },
 
+  fetchZones: (params) => {
+    return (dispatch) => {
+      dispatch({
+        type: constants.APPLICATION_STATE,
+        status: 'loading',
+        reducer: 'zone'
+      });
+
+      APIManager.get('/api/zone', params, (err, response) => {
+        if (err){
+          alert(err);
+          return;
+        }
+
+        console.log(JSON.stringify(response));
+        const zones = response.results;
+        
+        dispatch({
+          type: constants.ZONES_RECEIVED,
+          zones: zones
+        });
+      });
+    }
+  },
+
   /** Action triggered when zone is posted ('zones' = payload from API) */
   zoneCreated: (zone) => {
     return {
@@ -50,12 +76,47 @@ export default {
     }
   },
 
-  /** Action triggered when a user's profile information is loaded */
-  profileReceived: (profile) => {
-    return {
-      type: constants.PROFILE_RECEIVED,
-      profile: profile
+  /** Returns a FUNCTION (called by thunk) which executes the API call! */
+  fetchProfile: (params) => {
+    // insert the dispatch as an argument on our behalf (or else it wont have it)
+    return (dispatch) => {
+      // Dispatch an action (we are waiting for data)
+      dispatch({
+        type: constants.APPLICATION_STATE,
+        status: 'loading',
+        reducer: 'profile'
+      });
+
+      APIManager.get('/api/profile', params, (err, response) => {
+        if (err){
+          console.log('ERROR: ' + err);
+          return;
+        }
+
+        // console.log('fetchProfile: ' + JSON.stringify(response));
+        if (response.results.length == 0) {
+          alert('Profile Not Found.');
+          return;
+        }
+
+        const profile = response.results[0];
+        // this.props.profileReceived(profile);
+
+        // Directly dispatch an action (conduit to the reducer)
+        dispatch({
+          type: constants.PROFILE_RECEIVED,
+          profile: profile
+        })
+      });
     }
-  }
+  },
+
+  // /** Action triggered when a user's profile information is loaded */
+  // profileReceived: (profile) => {
+  //   return {
+  //     type: constants.PROFILE_RECEIVED,
+  //     profile: profile
+  //   }
+  // }
 
 }

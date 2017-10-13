@@ -1,7 +1,9 @@
 import constants from '../constants/constants';
 
 var initialState = {
-  list: []
+  list: [],
+  map: {},
+  appStatus: 'ready'
 }
 
 export default (state = initialState, action) => {
@@ -11,10 +13,25 @@ export default (state = initialState, action) => {
   switch (action.type){
     case constants.PROFILE_RECEIVED:
       console.log('PROFILE_RECEIVED ' + JSON.stringify(action.profile));
-      // instantiate a new array (bc otherwise setting an array onto an object)
+      
       let updatedList = Object.assign([], state.list);
       updatedList.push(action.profile);
       updated['list'] = updatedList;
+
+      let updatedMap = Object.assign({}, state.map);
+      updatedMap[action.profile.username] = action.profile;
+      updated['map'] = updatedMap;  
+      
+      updated['appStatus'] = 'ready';
+
+      return updated;
+
+    case constants.APPLICATION_STATE:
+      // console.log('APPLICATION_STATE: ' + action.status);
+      if(action.reducer != 'profile'){
+        return updated;
+      }
+      updated['appStatus'] = action.status;
 
       return updated;
 
