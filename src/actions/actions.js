@@ -41,7 +41,7 @@ export default {
           return;
         }
 
-        console.log(JSON.stringify(response));
+        //console.log(JSON.stringify(response));
         const zones = response.results;
         
         dispatch({
@@ -110,6 +110,24 @@ export default {
       });
     }
   },
+
+  updateProfile: (profile, updated) => {
+    return (dispatch) => {
+      APIManager.put(`/api/profile/${profile._id}`, updated, (err, response) => {
+        if (err){
+          alert('ERROR: ' + JSON.stringify(err));
+          return;
+        }
+        console.log('Profile Updated: ' + JSON.stringify(response));
+        
+        const updatedProfile = response.result;
+        dispatch({
+          type: constants.PROFILE_UPDATED,
+          profile: updatedProfile
+        });
+      });
+    }
+  }
 
   // /** Action triggered when a user's profile information is loaded */
   // profileReceived: (profile) => {

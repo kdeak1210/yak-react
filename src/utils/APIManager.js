@@ -5,8 +5,7 @@ export default {
 
   get: (url, params, callback) => {
     axios.get(url, {params: params})
-      .then((response) => {
-      
+      .then((response) => {      
         const confirmation = response.data.confirmation;
         if (confirmation != 'success') {
           // Send our custom error message, along with null (no response)
@@ -22,7 +21,7 @@ export default {
   post: (url, body, callback) => {
     axios.post(url, body)
       .then((response) => {
-        const confirmation = response.data.confirmation
+        const confirmation = response.data.confirmation;
         if (confirmation != 'success') {
           callback({message: response.data.message}, null);
         }
@@ -33,8 +32,18 @@ export default {
       });
   },
 
-  put: () => {
-
+  put: (url, body, callback) => {
+    axios.put(url, body)
+      .then((response) => {
+        const confirmation = response.data.confirmation;
+        if (confirmation != 'success') {
+          callback({message: response.data.message}, null);
+        }
+        callback(null, response.data);
+        
+      }).catch((err) => {
+        callback(err, null);
+      });
   },
 
   delete:() => {

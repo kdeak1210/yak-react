@@ -29,7 +29,7 @@ router.get('/:resource', (req, res, next) => {
     res.json({
       confirmation: 'success',
       results: results
-    })
+    });
   });
 });
 
@@ -59,7 +59,7 @@ router.get('/:resource/:id', (req, res, next) => {
     res.json({
       confirmation: 'success',
       result: result
-    })
+    });
   });
 });
 
@@ -88,7 +88,38 @@ router.post('/:resource', (req, res, next) => {
     res.json({
       confirmation: 'success',
       result: result
-    })
+    });
+  });
+});
+
+router.put('/:resource/:id', (req, res, next) => {
+
+  const resource = req.params.resource;
+  const controller = controllers[resource];
+
+  if (controller == null){
+    res.json({
+      confirmation: 'fail',
+      message: 'Invalid Resource Request: ' + resource
+    });
+    return;
+  }
+
+  const id = req.params.id;
+
+  controller.update(id, req.body, (err, result) => {
+    if (err){
+      res.json({
+        confirmation: 'fail',
+        message: err
+      });
+      return;
+    }
+
+    res.json({
+      confirmation: 'success',
+      result: result
+    });
   });
 });
 
