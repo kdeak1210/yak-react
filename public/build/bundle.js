@@ -3442,15 +3442,20 @@ module.exports = DOMLazyTree;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.APIManager = undefined;
+exports.ImageHelper = exports.APIManager = undefined;
 
 var _APIManager = __webpack_require__(236);
 
 var _APIManager2 = _interopRequireDefault(_APIManager);
 
+var _ImageHelper = __webpack_require__(339);
+
+var _ImageHelper2 = _interopRequireDefault(_ImageHelper);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.APIManager = _APIManager2.default;
+exports.ImageHelper = _ImageHelper2.default;
 
 /***/ }),
 /* 26 */
@@ -26237,6 +26242,8 @@ var Account = function (_Component) {
         content = _react2.default.createElement(
           'div',
           null,
+          _react2.default.createElement('img', { style: { borderRadius: 48, float: 'left', marginRight: 12 },
+            src: _utils.ImageHelper.thumbnail(this.props.user.image, 72) }),
           _react2.default.createElement(
             'h2',
             null,
@@ -34172,7 +34179,7 @@ var CurrentUser = function (_Component) {
           alert(err);
           return;
         }
-        //console.log('UPLOAD COMPLETE: ' + JSON.stringify(response.body));
+        // console.log('UPLOAD COMPLETE: ' + JSON.stringify(response.body));
 
         var updatedProfile = Object.assign({}, _this2.state.updated);
         updatedProfile['image'] = response.body['secure_url'];
@@ -34185,7 +34192,7 @@ var CurrentUser = function (_Component) {
     key: 'render',
     value: function render() {
       var currentUser = this.props.user;
-      var image = this.state.updated.image == null ? '' : this.state.updated.image.replace('upload', 'upload/c_thumb,h_150,w_150'); // render thumbnail size
+      var image = this.state.updated.image == null ? '' : _utils.ImageHelper.thumbnail(this.state.updated.image, 150);
 
       return _react2.default.createElement(
         'div',
@@ -37850,6 +37857,27 @@ var ProfileInfo = function (_Component) {
 }(_react.Component);
 
 exports.default = ProfileInfo;
+
+/***/ }),
+/* 339 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+/**
+ * A series of functions to interact with Cloudinary URLs and manip images
+ */
+exports.default = {
+
+  thumbnail: function thumbnail(url, dimension) {
+    var thumbParams = 'upload/c_thumb,h_' + dimension + ',w_' + dimension;
+    return url.replace('upload', thumbParams);
+  }
+};
 
 /***/ })
 /******/ ]);

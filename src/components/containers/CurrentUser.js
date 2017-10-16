@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import actions from '../../actions/actions';
 import Dropzone from 'react-dropzone';
-import { APIManager } from '../../utils';
+import { APIManager, ImageHelper } from '../../utils';
 import sha1 from 'sha1';
 
 class CurrentUser extends Component {
@@ -78,7 +78,7 @@ class CurrentUser extends Component {
         alert(err);
         return;
       }
-      //console.log('UPLOAD COMPLETE: ' + JSON.stringify(response.body));
+      // console.log('UPLOAD COMPLETE: ' + JSON.stringify(response.body));
 
       let updatedProfile = Object.assign({}, this.state.updated);
       updatedProfile['image'] = response.body['secure_url'];
@@ -91,7 +91,7 @@ class CurrentUser extends Component {
   render(){
     const currentUser = this.props.user;
     const image = (this.state.updated.image == null) ? '' : 
-      this.state.updated.image.replace('upload', 'upload/c_thumb,h_150,w_150'); // render thumbnail size
+      ImageHelper.thumbnail(this.state.updated.image, 150);
 
     return(
       <div>
