@@ -1,5 +1,6 @@
 /** A class to handle all the axios HTTP request methods */
 import axios from 'axios';
+import superagent from 'superagent';
 
 export default {
 
@@ -46,8 +47,27 @@ export default {
       });
   },
 
-  delete:() => {
+  delete: () => {
 
+  },
+
+  upload: (endpoint, file, params, callback) => {
+    console.log('APIManager - upload: ');
+
+    let uploadRequest = superagent.post(endpoint);
+
+    uploadRequest.attach('file', file);
+    Object.keys(params).forEach((key) => {
+      uploadRequest.field(key, params[key]);
+    });
+
+    uploadRequest.end((err, response) => {
+      if (err){
+        callback(err, null);
+        return;
+      }
+      callback(null, response);
+    });
   }
 
 }
