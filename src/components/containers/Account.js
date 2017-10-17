@@ -131,7 +131,7 @@ class Account extends Component{
           <button onClick={this.logout}>Logout</button>
           <Link to="/currentuser"><button>Account</button></Link>
         </div>
-      ) 
+      )
     }
 
     return(

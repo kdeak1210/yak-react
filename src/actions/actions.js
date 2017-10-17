@@ -19,6 +19,29 @@ export default {
     }
   },
 
+  /** For comment updates, takes the comment and the updates (params)
+   * Uses REDUX THUNK
+  */
+  updateComment: (comment, params) => {
+    return (dispatch) => {
+      const endpoint = `/api/comment/${comment._id}`;
+      APIManager.put(endpoint, params, (err, response) => {
+        if (err){
+          alert(err);
+          return
+        };
+
+        console.log(JSON.stringify(response));
+        
+        const updatedComment = response.result;
+        dispatch({
+          type: constants.COMMENT_UPDATED,
+          comment: updatedComment
+        });
+      });
+    }
+  },
+
   /** Action triggered when zones come back from API */
   zonesReceived: (zones) => {
     return {

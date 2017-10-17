@@ -14,11 +14,6 @@ export default (state = initialState, action) => {
   switch (action.type) {
     
     case constants.COMMENTS_RECEIVED:
-      // console.log('comments received', JSON.stringify(action.comments))
-      // console.log('comments received from zone: ', JSON.stringify(action.zone))      
-      
-      // updated['list'] = action.comments;
-      
       let zoneComments = (updatedMap[action.zone._id]) ? 
           Object.assign([], updatedMap[action.zone._id]) : [];
       // let zoneComments = updatedMap[action.zone._id];
@@ -57,6 +52,25 @@ export default (state = initialState, action) => {
       commentList.push(action.comment);
 
       updatedMap[action.comment.zone] = commentList;
+      updated['map'] = updatedMap;
+
+      return updated;
+
+    case constants.COMMENT_UPDATED:
+      console.log('COMMENT UPDATED: ' + JSON.stringify(action.comment))    
+
+      let list = updatedMap[action.comment.zone];
+      let newList = [];
+      
+      list.forEach((comment, i) => {
+        if (comment._id == action.comment._id){ // insert updated comment
+          newList.push(action.comment);      
+        } else {  // else, insert the old comments
+          newList.push(comment);
+        }
+      });
+
+      updatedMap[action.comment.zone] = newList;
       updated['map'] = updatedMap;
 
       return updated;

@@ -9,6 +9,7 @@ class Comments extends Component{
   constructor(){
     super();
     this.submitComment = this.submitComment.bind(this);
+    this.updateComment = this.updateComment.bind(this);
 
     this.state = {
       // list: []
@@ -95,11 +96,16 @@ class Comments extends Component{
       let comments = response.results;
       this.props.commentsReceived(comments, zone);
     });
+  }
 
+  updateComment(comment, updatedBody){
+    console.log('update comment: ' + comment._id + ', ' + updatedBody);
+    this.props.updateComment(comment, {body: updatedBody});
   }
   
   render(){
     const selectedZone = this.props.zones[this.props.index];
+    const currentUser = this.props.user;  // null means not logged in
     
     let zoneName, commentList = null;
 
@@ -109,8 +115,14 @@ class Comments extends Component{
       let zoneComments = this.props.commentsMap[selectedZone._id];    
       if (zoneComments != null) {
         commentList = zoneComments.map((comment, i) => {
+          let editable = false;
+          if (currentUser != null){
+            editable = (currentUser._id == comment.author.id);
+          }
           return (
-            <li key={i}><Comment currentComment={comment} /></li>
+            <li key={i}>
+              <Comment onUpdate={this.updateComment} isEditable={editable} currentComment={comment} />
+            </li>
           );
         });
       }
@@ -148,7 +160,8 @@ const stateToProps = (state) => {
 const dispatchToProps = (dispatch) => {
   return {
     commentsReceived: (comments, zone) => dispatch(actions.commentsReceived(comments, zone)),
-    commentCreated: (comment) => dispatch(actions.commentCreated(comment))
+    commentCreated: (comment) => dispatch(actions.commentCreated(comment)),
+    updateComment: (comment, params) => dispatch(actions.updateComment(comment, params))
   }
 }
 
