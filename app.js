@@ -7,18 +7,6 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const sessions = require('client-sessions');
 
-// Bring in our routes (index and API)
-const routes = require('./routes/index');
-const api = require('./routes/api');
-const account = require('./routes/account');
-
-// Initialize the express app
-const app = express();
-
-// Set the view engine
-app.engine('handlebars', exphbs({defaultLayout: 'main'}));
-app.set('view engine', 'handlebars');
-
 // Set up and connect to mongodb through mongoose
 const dbUrl = 'mongodb://localhost/yikkish';
 mongoose.connect(dbUrl, { useMongoClient: true });
@@ -30,6 +18,18 @@ mongoose.connection.on('connected', () => {
 mongoose.connection.on('error', (err) => {
   console.log('Database error: ' + err);
 });
+
+// Bring in our routes (index and API)
+const routes = require('./routes/index');
+const api = require('./routes/api');
+const account = require('./routes/account');
+
+// Initialize the express app
+const app = express();
+
+// Set the view engine
+app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.set('view engine', 'handlebars');
 
 // Set up some middleware - morgan, body + cookie parsers, static files
 app.use(logger('dev'));
@@ -47,11 +47,6 @@ app.use(sessions({
 
 // Serve pages in public directory
 app.use(express.static(path.join(__dirname, 'public')));
-
-// Set up root + API routes
-app.get('/', (req, res) => {
-  res.render('layouts/main');
-});
 
 app.use('/', routes);
 app.use('/api', api);

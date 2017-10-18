@@ -3,7 +3,7 @@ var router = express.Router()
 
 
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' })
+  res.render('index', { test: 'some text'})
 })
 
 router.get('/createzone', function(req, res, next) {
